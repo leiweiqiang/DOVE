@@ -4,3 +4,6 @@ finetune/checkpoint/*
 __pycache__/
 *.py[cod]
 *$py.class
+pretrained_models/__MACOSX
+pretrained_models/DOVE/*
+results
