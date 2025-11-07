@@ -31,7 +31,7 @@ DATA_ARGS=(
 
 # Training Configuration
 TRAIN_ARGS=(
-    --train_epochs 1000 # number of training epochs
+    --train_epochs 500 # number of training epochs
     --train_steps 10000
     --seed 42 # random seed
     --batch_size 2

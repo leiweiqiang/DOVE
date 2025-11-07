@@ -5,7 +5,7 @@ export TOKENIZERS_PARALLELISM=false
 
 # Model Configuration
 MODEL_ARGS=(
-    --model_path "checkpoint/DOVE-s1/ckpt-10000-sft"
+    --model_path "checkpoint/DOVE-s1/ckpt-10-sft"
     --model_name "dove-s2"
     --model_type "real-sr-image-video"
     --training_type "sft"
@@ -38,8 +38,8 @@ TRAIN_ARGS=(
     --train_epochs 10 # number of training epochs
     --train_steps 500
     --seed 42 # random seed
-    --batch_size 2
-    --gradient_accumulation_steps 1
+    --batch_size 1
+    --gradient_accumulation_steps 2
     --mixed_precision "bf16"  # ["no", "fp16"] # Only CogVideoX-2B supports fp16 training
     --learning_rate 5e-6
     --gradient_checkpointing true
@@ -65,10 +65,10 @@ CHECKPOINT_ARGS=(
 # Validation Configuration
 VALIDATION_ARGS=(
     --do_validation true  # ["true", "false"]
-    --validation_dir "data/VideoSR/test/UDM10"
+    --validation_dir "../datasets/test/UDM10"
     --validation_steps 100  # should be multiple of checkpointing_steps
-    --validation_videos "video_real_v0.txt"
-    --validation_ref_videos "video.txt"
+    --validation_videos "LQ-Video.txt"
+    --validation_ref_videos "GT-Video.txt"
     # --validation_prompts "prompts.txt"
     --gen_fps 8
     --raw_test true

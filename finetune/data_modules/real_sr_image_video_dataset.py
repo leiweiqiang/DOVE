@@ -62,9 +62,13 @@ class RealSRImageVideoDataset(Dataset):
         # video/prompt 顺序对应
         self.videos = load_videos_with_root(video_column, data_root)
         self.images = load_videos_with_root(image_column, image_data_root)
+        # Balance lengths so indexing is always valid
         if len(self.images) > len(self.videos):
             repeat_times = math.ceil(len(self.images) / len(self.videos))
             self.videos = (self.videos * repeat_times)[:len(self.images)]
+        elif len(self.images) < len(self.videos):
+            repeat_times = math.ceil(len(self.videos) / len(self.images))
+            self.images = (self.images * repeat_times)[:len(self.videos)]
 
         if caption_column is None:
             self.prompts = [''] * len(self.videos)
@@ -152,6 +156,17 @@ class RealSRImageVideoDataset(Dataset):
                 method=self.canny_merge_method
             )
 
+        # Convert to [B, C, F, H, W]
+        image_hq_frames = self.video_transform(image_hq_frames)
+        image_hq_frames = image_hq_frames.unsqueeze(0)
+        image_hq_frames = image_hq_frames.permute(0, 2, 1, 3, 4).contiguous()
+        image_lq_frames_resize = self.video_transform(image_lq_frames_resize)
+        image_lq_frames_resize = image_lq_frames_resize.unsqueeze(0)
+        image_lq_frames_resize = image_lq_frames_resize.permute(0, 2, 1, 3, 4).contiguous()
+        if image_edge_maps is not None:
+            image_edge_maps = image_edge_maps.unsqueeze(0)
+            image_edge_maps = image_edge_maps.permute(0, 2, 1, 3, 4).contiguous()
+
         # Video
         video_path = self.videos[index]
         video_hq_frames, video_lq_frames, video_edge_maps = self.preprocess_image_video(video_path, 'video')
@@ -166,6 +181,17 @@ class RealSRImageVideoDataset(Dataset):
                 video_edge_maps,
                 method=self.canny_merge_method
             )
+
+        # Convert to [B, C, F, H, W]
+        video_hq_frames = self.video_transform(video_hq_frames)
+        video_hq_frames = video_hq_frames.unsqueeze(0)
+        video_hq_frames = video_hq_frames.permute(0, 2, 1, 3, 4).contiguous()
+        video_lq_frames_resize = self.video_transform(video_lq_frames_resize)
+        video_lq_frames_resize = video_lq_frames_resize.unsqueeze(0)
+        video_lq_frames_resize = video_lq_frames_resize.permute(0, 2, 1, 3, 4).contiguous()
+        if video_edge_maps is not None:
+            video_edge_maps = video_edge_maps.unsqueeze(0)
+            video_edge_maps = video_edge_maps.permute(0, 2, 1, 3, 4).contiguous()
         
 
         cache_dir = self.trainer.args.data_root / "cache"
@@ -228,20 +254,7 @@ class RealSRImageVideoDataset(Dataset):
         }
     
     def preprocess_image_video(self, item_path: Path, mode: str):
-        # Current shape of frames: [F, C, H, W]
-        item_hq_frames, item_lq_frames = self.preprocess(item_path, mode)
-        H_, W_ = item_hq_frames.shape[2], item_hq_frames.shape[3]
-        item_lq_frames_resize = F.interpolate(item_lq_frames, size=(H_, W_), mode="bilinear", align_corners=False)
-
-        # Convert to [B, C, F, H, W]
-        item_hq_frames = self.video_transform(item_hq_frames)
-        item_hq_frames = item_hq_frames.unsqueeze(0)
-        item_hq_frames = item_hq_frames.permute(0, 2, 1, 3, 4).contiguous()
-        # Convert to [B, C, F, H, W]
-        item_lq_frames_resize = self.video_transform(item_lq_frames_resize)
-        item_lq_frames_resize = item_lq_frames_resize.unsqueeze(0)
-        item_lq_frames_resize = item_lq_frames_resize.permute(0, 2, 1, 3, 4).contiguous()
-        return item_lq_frames_resize, item_hq_frames
+        return self.preprocess(item_path, mode)
 
     def preprocess(self, video_path: Path, mode: str) -> torch.Tensor:
         """
