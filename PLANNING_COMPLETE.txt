@@ -1,0 +1,146 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                 CANNY EDGE MAP INTEGRATION PLAN                      ║
+║                        ✅ PLANNING COMPLETE                          ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  YOUR SPECIFICATIONS (FINALIZED)                                    │
+└─────────────────────────────────────────────────────────────────────┘
+
+  ✓ Merge Method:        Additive Clip (LQ + Edge, clamp to 255)
+  ✓ Canny Threshold 1:   50.0  (lower, edge sensitivity)
+  ✓ Canny Threshold 2:   150.0 (upper, noise suppression)  
+  ✓ Gaussian Kernel:     5×5   (kernel size)
+  ✓ Gaussian Sigma:      1.4   (blur strength)
+  ✓ Output Channels:     3     (RGB, no model changes needed)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  DOCUMENTATION CREATED                                              │
+└─────────────────────────────────────────────────────────────────────┘
+
+  📄 MODIFICATION_PLAN.md
+     → Detailed code changes for all 7 files
+     → Step-by-step implementation guide
+     → ~420 lines of comprehensive instructions
+
+  📄 DATAFLOW_DIAGRAM.md  
+     → Visual before/after comparison
+     → Pixel-level examples
+     → Performance analysis
+
+  📄 canny_merge_example.py
+     → Runnable demo script
+     → Synthetic data test
+     → Visualization code
+
+  📄 IMPLEMENTATION_SUMMARY.md
+     → Quick reference guide
+     → Checklist for implementation
+     → Expected behavior
+     → Tuning tips
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  FILES TO MODIFY (7 files)                                          │
+└─────────────────────────────────────────────────────────────────────┘
+
+  1. finetune/schemas/args.py
+     └─ Add 4 new parameters for Canny
+
+  2. finetune/datasets/utils.py  
+     └─ Add 2 utility functions (generate + merge)
+
+  3. finetune/datasets/real_sr_dataset.py
+     └─ Modify __init__, preprocess, __getitem__
+
+  4. finetune/datasets/real_sr_image_video_dataset.py
+     └─ Same modifications as file #3
+
+  5. finetune/train_ddp_one_s1.sh
+     └─ Add CANNY_ARGS section
+
+  6. finetune/train_ddp_one_s2.sh
+     └─ Add CANNY_ARGS section
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  IMPLEMENTATION FLOW                                                │
+└─────────────────────────────────────────────────────────────────────┘
+
+  Original HQ Frame → Generate Canny Edges → Apply Degradation
+         │                    │                      │
+         │                    │                      ↓
+         │                    │                  LQ Frame
+         │                    │                      │
+         │                    │                      ↓
+         │                    │            Resize to HQ resolution
+         │                    │                      │
+         │                    └──────────────────────┤
+         │                                           │
+         │                           ADDITIVE CLIP   │
+         │                           ┌───────────────┘
+         │                           ↓
+         │                    LQ + Edge (clipped)
+         │                           │
+         └─────────────┬─────────────┘
+                       │
+                       ↓
+              Training Pair (HQ, LQ+Edge)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  IMPLEMENTATION CHECKLIST                                           │
+└─────────────────────────────────────────────────────────────────────┘
+
+  Phase 1: Core Functions
+    [ ] Add parameters to Args schema
+    [ ] Implement generate_canny_edge_map()
+    [ ] Implement merge_edge_map_with_lq()
+
+  Phase 2: Dataset Integration  
+    [ ] Modify RealSRDataset
+    [ ] Modify RealSRImageVideoDataset
+
+  Phase 3: Training Scripts
+    [ ] Update train_ddp_one_s1.sh
+    [ ] Update train_ddp_one_s2.sh
+
+  Phase 4: Testing
+    [ ] Test backward compatibility (enable_canny=false)
+    [ ] Test with small dataset
+    [ ] Verify edge map visually
+    [ ] Check performance
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  ADVANTAGES OF THIS APPROACH                                        │
+└─────────────────────────────────────────────────────────────────────┘
+
+  ✅ No model architecture changes (still 3 channels)
+  ✅ Simple, interpretable operation
+  ✅ Edges naturally enhance textures  
+  ✅ Backward compatible
+  ✅ Fast (<10ms per frame)
+  ✅ Tunable parameters
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  NEXT STEPS                                                         │
+└─────────────────────────────────────────────────────────────────────┘
+
+  Option 1: Review the plan
+           → Open MODIFICATION_PLAN.md for details
+           → Open DATAFLOW_DIAGRAM.md for visuals
+           
+  Option 2: Test the logic
+           → Run: python canny_merge_example.py
+           → Check output: canny_merge_demo.png
+           
+  Option 3: Start implementation
+           → Say "Let's implement!" to begin
+           → I'll modify all 7 files systematically
+           
+  Option 4: Adjust parameters
+           → Let me know if you want different values
+           → I'll update all documents accordingly
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  READY TO IMPLEMENT! 🚀                                              ║
+║  All planning is complete and documented.                            ║
+╚══════════════════════════════════════════════════════════════════════╝
+

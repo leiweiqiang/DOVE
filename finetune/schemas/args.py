@@ -101,6 +101,14 @@ class Args(BaseModel):
     is_learnable_fuse: bool = False # Whether to use learnable optical flow
     image_ratio: float = 0.0 # The ratio of image and video in the training set
 
+    ########## Canny Edge Detection ##########
+    enable_canny: bool = False  # Whether to use Canny edge detection
+    canny_threshold1: float = 50.0  # Lower threshold for Canny
+    canny_threshold2: float = 150.0  # Upper threshold for Canny
+    canny_kernel_size: int = 5  # Kernel size for Gaussian blur (odd number)
+    canny_sigma: float = 1.4  # Gaussian kernel standard deviation
+    canny_merge_method: str = "additive_clip"  # Method to merge edge with LQ
+
     ########## Flow Match ##########
     noise_step: int = 700
     shift_t: float = 1.0

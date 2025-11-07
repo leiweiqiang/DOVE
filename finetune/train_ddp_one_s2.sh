@@ -87,6 +87,16 @@ SR_ARGS=(
     --degradation_config "configs/degradation_image_video.yaml"
 )
 
+# Canny Edge Detection parameters
+CANNY_ARGS=(
+    --enable_canny true
+    --canny_threshold1 50.0
+    --canny_threshold2 150.0
+    --canny_kernel_size 5
+    --canny_sigma 1.4
+    --canny_merge_method "additive_clip"
+)
+
 # Perceptual Loss parameters
 Per_ARGS=(
     --use_perceptual_loss true
@@ -105,4 +115,5 @@ accelerate launch --config_file accelerate_config.yaml train.py \
     "${CHECKPOINT_ARGS[@]}" \
     "${VALIDATION_ARGS[@]}" \
     "${SR_ARGS[@]}" \
+    "${CANNY_ARGS[@]}" \
     "${Per_ARGS[@]}" \

@@ -107,6 +107,14 @@ class RealSRImageVideoDataset(Dataset):
         self.target_h = int(self.height / 4)
         self.target_w = int(self.width / 4)
 
+        # Canny edge detection parameters
+        self.enable_canny = trainer.args.enable_canny
+        self.canny_threshold1 = trainer.args.canny_threshold1
+        self.canny_threshold2 = trainer.args.canny_threshold2
+        self.canny_kernel_size = trainer.args.canny_kernel_size
+        self.canny_sigma = trainer.args.canny_sigma
+        self.canny_merge_method = trainer.args.canny_merge_method
+
         # Check if all video files exist
         if any(not path.is_file() for path in self.videos):
             raise ValueError(
@@ -131,11 +139,33 @@ class RealSRImageVideoDataset(Dataset):
         # Image
         image_path = self.images[index]
         # [B, C, F, H, W]
-        image_lq_frames_resize, image_hq_frames = self.preprocess_image_video(image_path, 'image')
+        image_hq_frames, image_lq_frames, image_edge_maps = self.preprocess_image_video(image_path, 'image')
+        H_img, W_img = image_hq_frames.shape[2], image_hq_frames.shape[3]
+        image_lq_frames_resize = F.interpolate(image_lq_frames, size=(H_img, W_img), mode="bilinear", align_corners=False)
+        
+        # Merge edge maps with LQ for image (BEFORE normalization)
+        if self.enable_canny and image_edge_maps is not None:
+            from finetune.datasets.utils import merge_edge_map_with_lq
+            image_lq_frames_resize = merge_edge_map_with_lq(
+                image_lq_frames_resize,
+                image_edge_maps,
+                method=self.canny_merge_method
+            )
 
         # Video
         video_path = self.videos[index]
-        video_lq_frames_resize, video_hq_frames = self.preprocess_image_video(video_path, 'video')
+        video_hq_frames, video_lq_frames, video_edge_maps = self.preprocess_image_video(video_path, 'video')
+        H_vid, W_vid = video_hq_frames.shape[2], video_hq_frames.shape[3]
+        video_lq_frames_resize = F.interpolate(video_lq_frames, size=(H_vid, W_vid), mode="bilinear", align_corners=False)
+        
+        # Merge edge maps with LQ for video (BEFORE normalization)
+        if self.enable_canny and video_edge_maps is not None:
+            from finetune.datasets.utils import merge_edge_map_with_lq
+            video_lq_frames_resize = merge_edge_map_with_lq(
+                video_lq_frames_resize,
+                video_edge_maps,
+                method=self.canny_merge_method
+            )
         
 
         cache_dir = self.trainer.args.data_root / "cache"
@@ -255,14 +285,30 @@ class RealSRImageVideoDataset(Dataset):
                 max_num_frames = self.max_num_frames
             hq_frame_list, lq_frame_list = paired_random_crop_video(crop_frame_list, deg_frame_list, max_num_frames, self.target_h, self.target_w, 4)
 
+            # Convert HQ frames to tensors
             hq_tensor_list = [self.to_tensor(f) for f in hq_frame_list]
-            lq_tensor_list = [self.to_tensor(f) for f in lq_frame_list]
+            hq_video_tensor = torch.stack(hq_tensor_list, dim=0)  # [F, C, H, W]
             
-            # [F, C, H, W]
-            hq_video_tensor = torch.stack(hq_tensor_list, dim=0)
-            lq_video_tensor = torch.stack(lq_tensor_list, dim=0)
+            # Generate Canny edge maps from HQ (BEFORE degradation)
+            if self.enable_canny:
+                from finetune.datasets.utils import generate_canny_edge_map
+                edge_maps = generate_canny_edge_map(
+                    hq_frame_list,  # Use original HQ frames [F, H, W, C]
+                    threshold1=self.canny_threshold1,
+                    threshold2=self.canny_threshold2,
+                    kernel_size=self.canny_kernel_size,
+                    sigma=self.canny_sigma
+                )
+                edge_maps = torch.from_numpy(edge_maps).float()  # [F, H, W, 1]
+                edge_maps = edge_maps.permute(0, 3, 1, 2).contiguous()  # [F, 1, H, W]
+            else:
+                edge_maps = None
+            
+            # Convert LQ frames to tensors
+            lq_tensor_list = [self.to_tensor(f) for f in lq_frame_list]
+            lq_video_tensor = torch.stack(lq_tensor_list, dim=0)  # [F, C, h, w]
 
-            return hq_video_tensor, lq_video_tensor
+            return hq_video_tensor, lq_video_tensor, edge_maps
         else:
             # TODO
             raise NotImplementedError(f"Crop mode {self.crop_mode} not implemented")

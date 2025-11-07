@@ -21,6 +21,91 @@ import decord  # isort:skip
 decord.bridge.set_bridge("torch")
 
 
+##########  Canny Edge Detection  ##########
+
+
+def generate_canny_edge_map(
+    frames,
+    threshold1: float = 50.0,
+    threshold2: float = 150.0,
+    kernel_size: int = 5,
+    sigma: float = 1.4
+) -> np.ndarray:
+    """
+    Generate Canny edge map from video frames.
+    
+    Args:
+        frames: list of numpy arrays [H, W, C] or torch tensors
+        threshold1: Lower threshold for Canny edge detection
+        threshold2: Upper threshold for Canny edge detection
+        kernel_size: Gaussian blur kernel size (must be odd)
+        sigma: Gaussian kernel standard deviation
+        
+    Returns:
+        edge_maps: numpy array [F, H, W, 1] with edge maps in range [0, 255]
+    """
+    edge_maps = []
+    for frame in frames:
+        # Convert to numpy if needed
+        if isinstance(frame, torch.Tensor):
+            frame_np = frame.cpu().numpy()
+        else:
+            frame_np = frame
+            
+        # Ensure [H, W, C] format and uint8
+        if frame_np.ndim == 3 and frame_np.shape[0] == 3:  # [C, H, W]
+            frame_np = frame_np.transpose(1, 2, 0)
+        frame_np = np.clip(frame_np, 0, 255).astype(np.uint8)
+        
+        # Convert to grayscale
+        if frame_np.shape[-1] == 3:
+            gray = cv2.cvtColor(frame_np, cv2.COLOR_RGB2GRAY)
+        else:
+            gray = frame_np.squeeze()
+        
+        # Apply Gaussian blur to grayscale image FIRST (reduce noise before edge detection)
+        if kernel_size > 1:
+            gray_blurred = cv2.GaussianBlur(gray, (kernel_size, kernel_size), sigma)
+        else:
+            gray_blurred = gray
+        
+        # Then apply Canny edge detection on the blurred grayscale
+        edges = cv2.Canny(gray_blurred, threshold1, threshold2, 
+                         apertureSize=3, L2gradient=True)
+        
+        edge_maps.append(edges[..., np.newaxis])  # Add channel dim
+    
+    return np.array(edge_maps)  # [F, H, W, 1]
+
+
+def merge_edge_map_with_lq(
+    lq_frames: torch.Tensor,
+    edge_maps: torch.Tensor,
+    method: str = "additive_clip"
+) -> torch.Tensor:
+    """
+    Merge Canny edge maps with LQ frames using additive clipping.
+    
+    Args:
+        lq_frames: LQ frames [F, C, H, W] in range [0, 255]
+        edge_maps: Edge maps [F, 1, H, W] in range [0, 255]
+        method: "additive_clip" (only supported method)
+        
+    Returns:
+        merged_frames: [F, C, H, W] in range [0, 255]
+    """
+    if method != "additive_clip":
+        raise ValueError(f"Only 'additive_clip' method is supported, got {method}")
+    
+    # Expand edge map to 3 channels: [F, 1, H, W] -> [F, 3, H, W]
+    edge_maps_rgb = edge_maps.repeat(1, 3, 1, 1)
+    
+    # Add LQ and edge map, then clip to [0, 255]
+    merged = torch.clamp(lq_frames + edge_maps_rgb, 0.0, 255.0)
+    
+    return merged
+
+
 ##########  loaders  ##########
 
 
