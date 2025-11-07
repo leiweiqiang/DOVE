@@ -301,6 +301,14 @@ class Args(BaseModel):
         parser.add_argument("--is_learnable_fuse", type=lambda x: x.lower() == 'true', default=False)
         parser.add_argument("--image_ratio", type=float, default=0.0) # The ratio of image and video in the training set
 
+        # Canny Edge Detection parameters
+        parser.add_argument("--enable_canny", type=lambda x: x.lower() == 'true', default=False)
+        parser.add_argument("--canny_threshold1", type=float, default=50.0)
+        parser.add_argument("--canny_threshold2", type=float, default=150.0)
+        parser.add_argument("--canny_kernel_size", type=int, default=5)
+        parser.add_argument("--canny_sigma", type=float, default=1.4)
+        parser.add_argument("--canny_merge_method", type=str, default="additive_clip")
+
         # Flow Match parameters
         parser.add_argument("--noise_step", type=int, default=700)
         parser.add_argument("--shift_t", type=float, default=1.0)
