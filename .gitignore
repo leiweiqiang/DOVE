@@ -7,3 +7,4 @@ __pycache__/
 pretrained_models/__MACOSX
 pretrained_models/DOVE/*
 results
+finetune/wandb/*
