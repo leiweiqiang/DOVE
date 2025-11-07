@@ -37,7 +37,7 @@ TRAIN_ARGS=(
     --train_epochs 1000 # number of training epochs
     --train_steps 10000
     --seed 42 # random seed
-    --batch_size 2
+    --batch_size 1
     --gradient_accumulation_steps 1
     --mixed_precision "bf16"  # ["no", "fp16"] # Only CogVideoX-2B supports fp16 training
     --learning_rate 2e-5
@@ -48,7 +48,7 @@ TRAIN_ARGS=(
 
 # System Configuration
 SYSTEM_ARGS=(
-    --num_workers 8
+    --num_workers 4
     --pin_memory True
     --nccl_timeout 1800
     --stastic_frequency 500
@@ -78,7 +78,7 @@ VALIDATION_ARGS=(
 # SR parameters
 SR_ARGS=(
     --is_latent false
-    --is_cache true
+    --is_cache false
     --empty_prompt true
     --prompt_cache "prompt_embeddings"
     --sr_noise_step 399
