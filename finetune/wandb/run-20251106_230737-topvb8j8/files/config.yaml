@@ -1,0 +1,376 @@
+_wandb:
+    value:
+        cli_version: 0.22.3
+        e:
+            ty57tnelcfeyub6jzd3p2spjzsl6f9z1:
+                args:
+                    - --model_path
+                    - THUDM/CogVideoX1.5-5B
+                    - --model_name
+                    - dove-s1
+                    - --model_type
+                    - real-sr
+                    - --training_type
+                    - sft
+                    - --output_dir
+                    - checkpoint/DOVE-s1
+                    - --report_to
+                    - wandb
+                    - --data_root
+                    - ../datasets/train
+                    - --video_column
+                    - ../datasets/train/HQ-VSR.txt
+                    - --train_resolution
+                    - 25x320x640
+                    - --train_epochs
+                    - "1000"
+                    - --train_steps
+                    - "10000"
+                    - --seed
+                    - "42"
+                    - --batch_size
+                    - "2"
+                    - --gradient_accumulation_steps
+                    - "1"
+                    - --mixed_precision
+                    - bf16
+                    - --learning_rate
+                    - "2e-5"
+                    - --gradient_checkpointing
+                    - "true"
+                    - --max_grad_norm
+                    - "0.1"
+                    - --lr_scheduler
+                    - constant_with_warmup
+                    - --num_workers
+                    - "8"
+                    - --pin_memory
+                    - "True"
+                    - --nccl_timeout
+                    - "1800"
+                    - --stastic_frequency
+                    - "500"
+                    - --checkpointing_steps
+                    - "1000"
+                    - --checkpointing_limit
+                    - "3"
+                    - --do_validation
+                    - "true"
+                    - --validation_dir
+                    - ../datasets/test/UDM10
+                    - --validation_steps
+                    - "500"
+                    - --validation_videos
+                    - LQ-Video.txt
+                    - --validation_ref_videos
+                    - GT-Video.txt
+                    - --gen_fps
+                    - "8"
+                    - --raw_test
+                    - "true"
+                    - --num_inference_steps
+                    - "1"
+                    - --eval_metric_list
+                    - psnr,ssim,lpips,dists,clipiqa
+                    - --is_latent
+                    - "false"
+                    - --is_cache
+                    - "true"
+                    - --empty_prompt
+                    - "true"
+                    - --prompt_cache
+                    - prompt_embeddings
+                    - --sr_noise_step
+                    - "399"
+                    - --noise_step
+                    - "0"
+                    - --degradation_config
+                    - configs/degradation.yaml
+                    - --enable_canny
+                    - "true"
+                    - --canny_threshold1
+                    - "50.0"
+                    - --canny_threshold2
+                    - "150.0"
+                    - --canny_kernel_size
+                    - "5"
+                    - --canny_sigma
+                    - "1.4"
+                    - --canny_merge_method
+                    - additive_clip
+                codePath: train.py
+                codePathLocal: train.py
+                cpu_count: 80
+                cpu_count_logical: 160
+                cudaVersion: "12.4"
+                disk:
+                    /:
+                        total: "3766565826560"
+                        used: "3069979836416"
+                email: weiqiang.lei@gmail.com
+                executable: /workspace/env_DOVE/bin/python3.11
+                git:
+                    remote: https://github.com/leiweiqiang/DOVE.git
+                gpu: NVIDIA RTX A6000
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-de61e41a-e7ca-9fa4-8502-3e2ec9bd7b99
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-5873eaa2-f287-5a68-9d30-83c1d5520bbf
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-4148b566-2be3-ee84-87d3-58b4ae7cba64
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-eec603df-0032-2a90-c038-cef0eaee2622
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-8e16606c-7e9a-1035-e369-081886098633
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-f98b6bc9-37f7-9efc-708b-4d0184420b5f
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-116ee806-a0ce-42f6-c2bd-3f2d9df54c53
+                    - architecture: Ampere
+                      cudaCores: 10752
+                      memoryTotal: "51527024640"
+                      name: NVIDIA RTX A6000
+                      uuid: GPU-0062b396-f918-59f8-08c5-0bb9b8f9f96b
+                host: tra-gpu1
+                memory:
+                    total: "540632412160"
+                os: Linux-5.15.0-117-generic-x86_64-with-glibc2.35
+                program: /mnt/T5_4T/workspace/jlyi/DOVE/finetune/train.py
+                python: CPython 3.11.14
+                root: /mnt/T5_4T/workspace/jlyi/DOVE/finetune
+                startedAt: "2025-11-07T07:07:37.616596Z"
+                writerId: ty57tnelcfeyub6jzd3p2spjzsl6f9z1
+        m: []
+        python_version: 3.11.14
+        t:
+            "1":
+                - 1
+                - 11
+                - 41
+                - 49
+                - 51
+                - 71
+                - 83
+                - 98
+                - 105
+            "2":
+                - 1
+                - 11
+                - 41
+                - 49
+                - 51
+                - 71
+                - 83
+                - 98
+                - 105
+            "3":
+                - 13
+            "4": 3.11.14
+            "5": 0.22.3
+            "6": 4.57.1
+            "12": 0.22.3
+            "13": linux-x86_64
+batch_size:
+    value: 2
+beta1:
+    value: 0.9
+beta2:
+    value: 0.95
+beta3:
+    value: 0.98
+canny_kernel_size:
+    value: 5
+canny_merge_method:
+    value: additive_clip
+canny_sigma:
+    value: 1.4
+canny_threshold1:
+    value: 50
+canny_threshold2:
+    value: 150
+caption_column:
+    value: null
+checkpointing_limit:
+    value: 3
+checkpointing_steps:
+    value: 1000
+crop_mode:
+    value: random_crop
+data_root:
+    value: ../datasets/train
+degradation_config:
+    value: configs/degradation.yaml
+diffusion_gan_max_timestep:
+    value: 1000
+dists_weight:
+    value: 0
+do_validation:
+    value: true
+ea_dists_weight:
+    value: 0
+ea_lpips_weight:
+    value: 0
+empty_prompt:
+    value: true
+empty_ratio:
+    value: 0
+enable_canny:
+    value: true
+enable_slicing:
+    value: true
+enable_tiling:
+    value: true
+epsilon:
+    value: 1e-08
+eval_metric_list:
+    value: psnr,ssim,lpips,dists,clipiqa
+frame_diff_weight:
+    value: 0
+gen_cls_loss_weight:
+    value: 0.005
+gen_fps:
+    value: 8
+gradient_accumulation_steps:
+    value: 1
+gradient_checkpointing:
+    value: true
+image_column:
+    value: null
+image_data_root:
+    value: null
+image_ratio:
+    value: 0
+image_step:
+    value: 0
+is_cache:
+    value: true
+is_image_video_mix:
+    value: false
+is_latent:
+    value: false
+is_learnable_fuse:
+    value: false
+is_prompt_latent:
+    value: false
+learning_rate:
+    value: 2e-05
+lora_alpha:
+    value: 64
+lpips_weight:
+    value: 0
+lr_num_cycles:
+    value: 1
+lr_power:
+    value: 1
+lr_scheduler:
+    value: constant_with_warmup
+lr_warmup_steps:
+    value: 100
+lr_warmup_type:
+    value: linear
+max_grad_norm:
+    value: 0.1
+mixed_precision:
+    value: bf16
+model_name:
+    value: dove-s1
+model_path:
+    value: THUDM/CogVideoX1.5-5B
+model_type:
+    value: real-sr
+nccl_timeout:
+    value: 1800
+noise_step:
+    value: 0
+num_inference_steps:
+    value: 1
+num_workers:
+    value: 8
+optimizer:
+    value: adamw
+output_dir:
+    value: checkpoint/DOVE-s1
+pin_memory:
+    value: true
+prompt_cache:
+    value: prompt_embeddings
+rank:
+    value: 128
+raw_test:
+    value: true
+report_to:
+    value: wandb
+resume_from_checkpoint:
+    value: null
+seed:
+    value: 42
+shift_t:
+    value: 1
+sr_noise_step:
+    value: 399
+stastic_frequency:
+    value: 500
+target_modules:
+    value:
+        - to_q
+        - to_k
+        - to_v
+        - to_out.0
+tracker_name:
+    value: VSR
+train_epochs:
+    value: 78
+train_resolution:
+    value:
+        - 25
+        - 320
+        - 640
+train_steps:
+    value: 10000
+training_type:
+    value: sft
+use_optical_flow:
+    value: false
+use_perceptual_loss:
+    value: false
+validation_dir:
+    value: ../datasets/test/UDM10
+validation_images:
+    value: null
+validation_prompts:
+    value: null
+validation_ref_videos:
+    value: GT-Video.txt
+validation_steps:
+    value: 500
+validation_videos:
+    value: LQ-Video.txt
+video_column:
+    value: ../datasets/train/HQ-VSR.txt
+video_step:
+    value: 0
+weight_decay:
+    value: 0.0001

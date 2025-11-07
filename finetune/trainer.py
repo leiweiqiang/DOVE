@@ -33,8 +33,8 @@ from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
 from finetune.constants import LOG_LEVEL, LOG_NAME
-from finetune.datasets import RealSRDataset, RealSRImageVideoDataset
-from finetune.datasets.utils import (
+from finetune.data_modules import RealSRDataset, RealSRImageVideoDataset
+from finetune.data_modules.utils import (
     load_images,
     load_prompts,
     load_videos,
