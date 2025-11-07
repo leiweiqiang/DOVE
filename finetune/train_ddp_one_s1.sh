@@ -3,6 +3,9 @@
 # Prevent tokenizer parallelism issues
 export TOKENIZERS_PARALLELISM=false
 
+# PyTorch CUDA memory allocation optimization to reduce fragmentation
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
 # Model Configuration
 MODEL_ARGS=(
     --model_path "THUDM/CogVideoX1.5-5B"
@@ -31,7 +34,7 @@ DATA_ARGS=(
 
 # Training Configuration
 TRAIN_ARGS=(
-    --train_epochs 500 # number of training epochs
+    --train_epochs 1000 # number of training epochs
     --train_steps 10000
     --seed 42 # random seed
     --batch_size 2
@@ -53,7 +56,7 @@ SYSTEM_ARGS=(
 
 # Checkpointing Configuration
 CHECKPOINT_ARGS=(
-    --checkpointing_steps 10 # save checkpoint every x steps
+    --checkpointing_steps 500 # save checkpoint every x steps
     --checkpointing_limit 3 # maximum number of checkpoints to keep, after which the oldest one is deleted
     # --resume_from_checkpoint "/absolute/path/to/checkpoint_dir"  # if you want to resume from a checkpoint, otherwise, comment this line
 )

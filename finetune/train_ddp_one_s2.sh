@@ -3,6 +3,9 @@
 # Prevent tokenizer parallelism issues
 export TOKENIZERS_PARALLELISM=false
 
+# PyTorch CUDA memory allocation optimization to reduce fragmentation
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
 # Model Configuration
 MODEL_ARGS=(
     --model_path "checkpoint/DOVE-s1/ckpt-10-sft"
