@@ -8,7 +8,7 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 # Model Configuration
 MODEL_ARGS=(
-    --model_path "checkpoint/DOVE-s1/ckpt-10-sft"
+    --model_path "checkpoint/DOVE-s1/ckpt-10000-sft"
     --model_name "dove-s2"
     --model_type "real-sr-image-video"
     --training_type "sft"
@@ -62,7 +62,7 @@ SYSTEM_ARGS=(
 CHECKPOINT_ARGS=(
     --checkpointing_steps 100 # save checkpoint every x steps
     --checkpointing_limit 3 # maximum number of checkpoints to keep, after which the oldest one is deleted
-    # --resume_from_checkpoint "/absolute/path/to/checkpoint_dir"  # if you want to resume from a checkpoint, otherwise, comment this line
+    # --resume_from_checkpoint "checkpoint/DOVE-s2/checkpoint-400"  # if you want to resume from a checkpoint, otherwise, comment this line
 )
 
 # Validation Configuration

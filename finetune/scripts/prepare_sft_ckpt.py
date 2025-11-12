@@ -69,10 +69,11 @@ def prepare_ckpt_structure(output_dir, weights_source_dir, ckpt_output_dir):
     print("Checkpoint structure updated.")
 
 def main():
+    default_weights_source = Path(__file__).resolve().parents[2] / "pretrained_models" / "CogVideoX1.5-5B"
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint_dir", required=True, help="Input checkpoint folder (e.g., path/checkpoint-12)")
     parser.add_argument("--mid_output_dir", default="", help="Path to store merged FP32 weights")
-    parser.add_argument("--weights_source", default=os.path.expanduser("../../pretrained_models/CogVideoX1.5-5B"),
+    parser.add_argument("--weights_source", default=str(default_weights_source),
                         help="Path to original CogVideo weights")
     parser.add_argument("--ckpt_output_dir", default="",
                         help="Path to final output ckpt directory")

@@ -57,8 +57,8 @@ SYSTEM_ARGS=(
 # Checkpointing Configuration
 CHECKPOINT_ARGS=(
     --checkpointing_steps 500 # save checkpoint every x steps
-    --checkpointing_limit 3 # maximum number of checkpoints to keep, after which the oldest one is deleted
-    # --resume_from_checkpoint "/absolute/path/to/checkpoint_dir"  # if you want to resume from a checkpoint, otherwise, comment this line
+    --checkpointing_limit 100 # maximum number of checkpoints to keep, after which the oldest one is deleted
+    --resume_from_checkpoint "checkpoint/DOVE-s1/checkpoint-8500"  # if you want to resume from a checkpoint, otherwise, comment this line
 )
 
 # Validation Configuration
